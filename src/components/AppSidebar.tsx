@@ -21,7 +21,7 @@ export function AppSidebar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <Sidebar defaultCollapsed={false}>
+    <Sidebar>
       <SidebarHeader className="border-b border-white/5 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">

@@ -9,7 +9,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
 import HomePage from "./pages/HomePage";
 import ArtistsPage from "./pages/ArtistsPage";
+import ArtistDetailPage from "./pages/ArtistDetailPage";
 import CatalogPage from "./pages/CatalogPage";
+import AboutJoePage from "./pages/AboutJoePage";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 
@@ -27,7 +29,9 @@ const App = () => (
               <Route element={<Layout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/artists" element={<ArtistsPage />} />
+                <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
                 <Route path="/catalog/:type" element={<CatalogPage />} />
+                <Route path="/about-joe" element={<AboutJoePage />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
