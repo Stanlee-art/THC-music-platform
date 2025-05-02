@@ -9,7 +9,237 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      albums: {
+        Row: {
+          album_type: string
+          artist_id: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          title: string
+          tracks: number | null
+          updated_at: string | null
+          year: string | null
+        }
+        Insert: {
+          album_type: string
+          artist_id: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          title: string
+          tracks?: number | null
+          updated_at?: string | null
+          year?: string | null
+        }
+        Update: {
+          album_type?: string
+          artist_id?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          title?: string
+          tracks?: number | null
+          updated_at?: string | null
+          year?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "albums_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artists: {
+        Row: {
+          banner_url: string | null
+          bio: string | null
+          created_at: string | null
+          followers: string | null
+          id: string
+          image_url: string | null
+          name: string
+          slug: string
+          type: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          banner_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          followers?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          slug: string
+          type: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          banner_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          followers?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          slug?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      beats: {
+        Row: {
+          audio_url: string | null
+          bpm: number | null
+          created_at: string | null
+          id: string
+          image_url: string | null
+          producer_id: string
+          title: string
+          updated_at: string | null
+          year: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          bpm?: number | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          producer_id: string
+          title: string
+          updated_at?: string | null
+          year?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          bpm?: number | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          producer_id?: string
+          title?: string
+          updated_at?: string | null
+          year?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beats_producer_id_fkey"
+            columns: ["producer_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      songs: {
+        Row: {
+          album_id: string | null
+          artist_id: string
+          audio_url: string | null
+          created_at: string | null
+          id: string
+          image_url: string | null
+          is_single: boolean | null
+          title: string
+          updated_at: string | null
+          year: string | null
+        }
+        Insert: {
+          album_id?: string | null
+          artist_id: string
+          audio_url?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_single?: boolean | null
+          title: string
+          updated_at?: string | null
+          year?: string | null
+        }
+        Update: {
+          album_id?: string | null
+          artist_id?: string
+          audio_url?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_single?: boolean | null
+          title?: string
+          updated_at?: string | null
+          year?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "songs_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "songs_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      videos: {
+        Row: {
+          artist_id: string
+          created_at: string | null
+          date: string | null
+          duration: string | null
+          id: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          video_url: string | null
+          views: string | null
+        }
+        Insert: {
+          artist_id: string
+          created_at?: string | null
+          date?: string | null
+          duration?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          video_url?: string | null
+          views?: string | null
+        }
+        Update: {
+          artist_id?: string
+          created_at?: string | null
+          date?: string | null
+          duration?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          video_url?: string | null
+          views?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

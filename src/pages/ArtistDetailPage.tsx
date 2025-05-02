@@ -1,110 +1,100 @@
 
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Music, Disc, Film } from "lucide-react";
-
-// THC Artists complete data
-const artistsData = {
-  "saint": {
-    name: "$aint",
-    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-    banner: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618",
-    type: "artist",
-    bio: "$aint is one of the founding members of THeeCosystem, known for his unique flow and powerful lyrics.",
-    followers: "12.5K",
-    albums: [
-      { id: 1, title: "Saint's World", tracks: 10, image: "https://images.unsplash.com/photo-1500673922987-e212871fec22", year: "2023" }
-    ],
-    singles: [
-      { id: 1, title: "Higher Ground", image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625", year: "2023" },
-      { id: 2, title: "Midnight Flow", image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7", year: "2023" }
-    ]
-  },
-  "bill-james": {
-    name: "Bill James",
-    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
-    banner: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-    type: "artist",
-    bio: "Bill James brings a southern influence to THeeCosystem with his distinct style and storytelling abilities.",
-    followers: "8.2K",
-    albums: [
-      { id: 1, title: "Bill's Vision", tracks: 12, image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7", year: "2023" }
-    ],
-    singles: [
-      { id: 1, title: "Street Dreams", image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625", year: "2023" },
-      { id: 2, title: "City Lights", image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", year: "2023" }
-    ]
-  },
-  "kennrank": {
-    name: "Kennrank",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    banner: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4",
-    type: "artist",
-    bio: "Kennrank's experimental approach to hip hop has made him a standout member of THeeCosystem.",
-    followers: "6.7K",
-    albums: [
-      { id: 1, title: "Mind of Kennrank", tracks: 11, image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", year: "2022" }
-    ],
-    singles: [
-      { id: 1, title: "Rhythm & Flow", image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb", year: "2023" },
-      { id: 2, title: "Late Night Thoughts", image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625", year: "2022" }
-    ]
-  },
-  "zzero": {
-    name: "Zzero",
-    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625",
-    banner: "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07",
-    type: "artist",
-    bio: "Zzero contributes a raw, unfiltered energy to THeeCosystem collaborations.",
-    followers: "5.3K",
-    singles: [
-      { id: 1, title: "Zero to Hero", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", year: "2023" },
-      { id: 2, title: "Night Rider", image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7", year: "2023" }
-    ]
-  },
-  "sean": {
-    name: "Sean",
-    image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-    banner: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6",
-    type: "producer",
-    bio: "Sean is the production mastermind behind many of THeeCosystem's biggest tracks, crafting unique beats and soundscapes.",
-    followers: "7.1K",
-    beats: [
-      { id: 1, title: "Urban Groove", bpm: 95, image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb", year: "2023" },
-      { id: 2, title: "Midnight Rhythm", bpm: 85, image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625", year: "2023" },
-      { id: 3, title: "Street Flow", bpm: 90, image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", year: "2023" },
-      { id: 4, title: "Chill Vibes", bpm: 75, image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", year: "2022" }
-    ],
-    productions: [
-      { id: 1, title: "THC Vol. 1", tracks: 12, image: "https://images.unsplash.com/photo-1500673922987-e212871fec22", year: "2023" },
-      { id: 2, title: "THC Vol. 2", tracks: 10, image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625", year: "2023" }
-    ]
-  },
-  "meme-joe": {
-    name: "Meme Joe",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-    banner: "https://images.unsplash.com/photo-1606857521015-7f9fcf423740",
-    type: "creator",
-    bio: "Meme Joe brings THC to life through his creative video content, including skits and behind-the-scenes footage.",
-    followers: "9.2K",
-    // Redirects to the dedicated page
-  }
-};
+import { Play, Music, Disc, Film, Upload, Edit, PlusCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { 
+  fetchArtistBySlug, 
+  fetchAlbumsByArtistId, 
+  fetchSinglesByArtistId,
+  fetchVideosByArtistId,
+  fetchBeatsByProducerId,
+  updateArtistProfile
+} from "@/lib/database";
+import ImageUploader from "@/components/ImageUploader";
+import { toast } from "sonner";
 
 const ArtistDetailPage = () => {
-  const { artistId } = useParams();
-  const artist = artistsData[artistId as string];
+  const { artistId } = useParams<{ artistId: string }>();
+  const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Fetch artist data
+  const { 
+    data: artist, 
+    isLoading: artistLoading,
+    refetch: refetchArtist
+  } = useQuery({
+    queryKey: ['artist', artistId],
+    queryFn: () => fetchArtistBySlug(artistId || ''),
+  });
+  
+  // Fetch artist albums
+  const { data: albums = [] } = useQuery({
+    queryKey: ['artist-albums', artist?.id],
+    queryFn: () => fetchAlbumsByArtistId(artist?.id),
+    enabled: !!artist?.id,
+  });
+  
+  // Fetch artist singles
+  const { data: singles = [] } = useQuery({
+    queryKey: ['artist-singles', artist?.id],
+    queryFn: () => fetchSinglesByArtistId(artist?.id),
+    enabled: !!artist?.id,
+  });
+  
+  // Fetch artist videos (for creators)
+  const { data: videos = [] } = useQuery({
+    queryKey: ['artist-videos', artist?.id],
+    queryFn: () => fetchVideosByArtistId(artist?.id),
+    enabled: !!artist?.id && artist?.type === 'creator',
+  });
+  
+  // Fetch producer beats (for producers)
+  const { data: beats = [] } = useQuery({
+    queryKey: ['producer-beats', artist?.id],
+    queryFn: () => fetchBeatsByProducerId(artist?.id),
+    enabled: !!artist?.id && (artist?.type === 'producer' || artist?.name === 'Meme'),
+  });
 
-  if (!artist) {
-    return (
-      <div className="container py-8">
-        <div className="text-center py-20">
-          <h3 className="text-xl font-medium text-gray-400">Artist not found</h3>
-        </div>
-      </div>
-    );
-  }
+  // Handle profile image upload
+  const handleProfileImageUpload = async (url: string) => {
+    if (!artist?.id) return;
+    
+    try {
+      const success = await updateArtistProfile(artist.id, {
+        image_url: url,
+        updated_at: new Date().toISOString()
+      });
+      
+      if (success) {
+        refetchArtist();
+      }
+    } catch (error) {
+      console.error('Error updating profile image:', error);
+      toast.error('Failed to update profile image');
+    }
+  };
+  
+  // Handle banner image upload
+  const handleBannerImageUpload = async (url: string) => {
+    if (!artist?.id) return;
+    
+    try {
+      const success = await updateArtistProfile(artist.id, {
+        banner_url: url,
+        updated_at: new Date().toISOString()
+      });
+      
+      if (success) {
+        refetchArtist();
+      }
+    } catch (error) {
+      console.error('Error updating banner image:', error);
+      toast.error('Failed to update banner image');
+    }
+  };
 
   const getArtistIcon = (type: string) => {
     switch (type) {
@@ -117,22 +107,68 @@ const ArtistDetailPage = () => {
     }
   };
 
+  if (artistLoading) {
+    return (
+      <div className="container py-8">
+        <div className="animate-pulse">
+          <div className="h-64 md:h-80 bg-white/10 rounded-lg mb-6"></div>
+          <div className="h-8 bg-white/10 rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+          <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+          <div className="h-4 bg-white/10 rounded w-3/4"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!artist) {
+    return (
+      <div className="container py-8">
+        <div className="text-center py-20">
+          <h3 className="text-xl font-medium text-gray-400">Artist not found</h3>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Artist Banner & Info */}
       <div 
         className="relative h-64 md:h-80 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${artist.banner})` }}
+        style={{ backgroundImage: `url(${artist.banner_url})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent">
-          <div className="container h-full flex items-end pb-6">
-            <div className="flex items-center gap-6">
-              <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-thc-blue">
+          <div className="container h-full flex flex-col justify-between py-6">
+            {isEditMode && (
+              <div className="self-end">
+                <ImageUploader 
+                  bucketName="artist_images"
+                  folderPath="banners"
+                  onImageUploaded={handleBannerImageUpload}
+                  existingImageUrl={artist.banner_url}
+                  className="w-32 h-20"
+                />
+              </div>
+            )}
+            <div className="flex items-center gap-6 mt-auto">
+              <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-thc-blue">
                 <img 
-                  src={artist.image} 
+                  src={artist.image_url} 
                   alt={artist.name} 
                   className="w-full h-full object-cover" 
                 />
+                {isEditMode && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <ImageUploader 
+                      bucketName="artist_images"
+                      folderPath="profiles"
+                      onImageUploaded={handleProfileImageUpload}
+                      existingImageUrl={artist.image_url}
+                      className="w-full h-full"
+                    />
+                  </div>
+                )}
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -144,6 +180,16 @@ const ArtistDetailPage = () => {
             </div>
           </div>
         </div>
+        
+        {/* Edit mode toggle button */}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="absolute top-4 right-4 bg-black/30 border-white/20"
+          onClick={() => setIsEditMode(!isEditMode)}
+        >
+          {isEditMode ? "Done" : <><Edit className="h-4 w-4 mr-1" /> Edit Profile</>}
+        </Button>
       </div>
 
       <div className="container py-8">
@@ -154,16 +200,16 @@ const ArtistDetailPage = () => {
         </div>
 
         {/* Albums Section - Only for artists with albums */}
-        {artist.albums && artist.albums.length > 0 && (
+        {albums.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4">Albums</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {artist.albums.map(album => (
+              {albums.map((album: any) => (
                 <Card key={album.id} className="border border-white/5 bg-white/5 hover:bg-white/10 transition">
                   <CardContent className="p-4">
                     <div className="mb-3 relative group">
                       <img 
-                        src={album.image} 
+                        src={album.image_url} 
                         alt={album.title} 
                         className="w-full aspect-square object-cover rounded" 
                       />
@@ -178,21 +224,30 @@ const ArtistDetailPage = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              {isEditMode && (
+                <Card className="border border-white/5 bg-white/5 hover:bg-white/10 transition border-dashed">
+                  <CardContent className="p-4 h-full flex flex-col items-center justify-center">
+                    <PlusCircle className="h-12 w-12 text-gray-500 mb-2" />
+                    <p className="text-gray-500 text-center">Add New Album</p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         )}
 
         {/* Singles Section - For artists with singles */}
-        {artist.singles && artist.singles.length > 0 && (
+        {singles.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4">Singles</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {artist.singles.map(single => (
+              {singles.map((single: any) => (
                 <Card key={single.id} className="border border-white/5 bg-white/5 hover:bg-white/10 transition">
                   <CardContent className="p-4">
                     <div className="mb-3 relative group">
                       <img 
-                        src={single.image} 
+                        src={single.image_url} 
                         alt={single.title} 
                         className="w-full aspect-square object-cover rounded" 
                       />
@@ -207,21 +262,74 @@ const ArtistDetailPage = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              {isEditMode && (
+                <Card className="border border-white/5 bg-white/5 hover:bg-white/10 transition border-dashed">
+                  <CardContent className="p-4 h-full flex flex-col items-center justify-center">
+                    <PlusCircle className="h-10 w-10 text-gray-500 mb-1" />
+                    <p className="text-gray-500 text-sm text-center">Add New Single</p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         )}
 
-        {/* Beats Section - Only for producer (Sean) */}
-        {artist.beats && artist.beats.length > 0 && (
+        {/* Videos Section - Only for creator (Joe) */}
+        {artist.type === 'creator' && videos.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold mb-4">Videos</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {videos.map((video: any) => (
+                <Card key={video.id} className="border border-white/5 bg-white/5 hover:bg-white/10 transition">
+                  <CardContent className="p-4">
+                    <div className="mb-3 relative group">
+                      <img 
+                        src={video.thumbnail_url} 
+                        alt={video.title} 
+                        className="w-full aspect-video object-cover rounded" 
+                      />
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded">
+                        <Button className="rounded-full h-12 w-12 bg-thc-blue hover:bg-thc-blue-light p-0">
+                          <Play className="h-5 w-5 ml-0.5" />
+                        </Button>
+                      </div>
+                      <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded text-xs text-white">
+                        {video.duration}
+                      </div>
+                    </div>
+                    <h3 className="font-medium text-white">{video.title}</h3>
+                    <div className="flex justify-between text-sm text-gray-400 mt-1">
+                      <span>{video.date}</span>
+                      <span>{video.views} views</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {isEditMode && (
+                <Card className="border border-white/5 bg-white/5 hover:bg-white/10 transition border-dashed">
+                  <CardContent className="p-4 h-full flex flex-col items-center justify-center">
+                    <PlusCircle className="h-12 w-12 text-gray-500 mb-2" />
+                    <p className="text-gray-500 text-center">Add New Video</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Beats Section - Only for producer (Sean) and Meme who is also a producer */}
+        {(artist.type === 'producer' || artist.name === 'Meme') && beats.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4">Beats</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {artist.beats.map(beat => (
+              {beats.map((beat: any) => (
                 <Card key={beat.id} className="border border-white/5 bg-white/5 hover:bg-white/10 transition">
                   <CardContent className="p-4">
                     <div className="mb-3 relative group">
                       <img 
-                        src={beat.image} 
+                        src={beat.image_url} 
                         alt={beat.title} 
                         className="w-full aspect-square object-cover rounded" 
                       />
@@ -236,35 +344,15 @@ const ArtistDetailPage = () => {
                   </CardContent>
                 </Card>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* Productions Section - Only for producer (Sean) */}
-        {artist.productions && artist.productions.length > 0 && (
-          <div className="mb-10">
-            <h2 className="text-2xl font-bold mb-4">Productions</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {artist.productions.map(production => (
-                <Card key={production.id} className="border border-white/5 bg-white/5 hover:bg-white/10 transition">
-                  <CardContent className="p-4">
-                    <div className="mb-3 relative group">
-                      <img 
-                        src={production.image} 
-                        alt={production.title} 
-                        className="w-full aspect-square object-cover rounded" 
-                      />
-                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded">
-                        <Button className="rounded-full h-12 w-12 bg-thc-blue hover:bg-thc-blue-light p-0">
-                          <Play className="h-5 w-5 ml-0.5" />
-                        </Button>
-                      </div>
-                    </div>
-                    <h3 className="font-medium text-white">{production.title}</h3>
-                    <p className="text-sm text-gray-400">{production.tracks} tracks • {production.year}</p>
+              
+              {isEditMode && (
+                <Card className="border border-white/5 bg-white/5 hover:bg-white/10 transition border-dashed">
+                  <CardContent className="p-4 h-full flex flex-col items-center justify-center">
+                    <PlusCircle className="h-12 w-12 text-gray-500 mb-2" />
+                    <p className="text-gray-500 text-center">Add New Beat</p>
                   </CardContent>
                 </Card>
-              ))}
+              )}
             </div>
           </div>
         )}
