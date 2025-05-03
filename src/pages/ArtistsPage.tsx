@@ -70,7 +70,6 @@ const ArtistsPage = () => {
                 <div className="p-4">
                   <div className="h-5 bg-white/10 animate-pulse rounded mb-2"></div>
                   <div className="h-4 bg-white/10 animate-pulse rounded w-2/3 mb-2"></div>
-                  <div className="h-3 bg-white/10 animate-pulse rounded w-1/2"></div>
                 </div>
               </CardContent>
             </Card>
@@ -97,9 +96,6 @@ const ArtistsPage = () => {
                       <h3 className="text-xl font-medium text-white">{artist.name}</h3>
                     </div>
                     <p className="mt-1 text-sm text-gray-400 line-clamp-2">{artist.bio}</p>
-                    <div className="mt-2 flex items-center text-sm text-gray-400">
-                      <span>{artist.followers} followers</span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>

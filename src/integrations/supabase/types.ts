@@ -139,6 +139,47 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          artist_id: string | null
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          is_artist: boolean | null
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          artist_id?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          is_artist?: boolean | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          artist_id?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          is_artist?: boolean | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       songs: {
         Row: {
           album_id: string | null

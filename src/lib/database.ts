@@ -60,19 +60,54 @@ export async function fetchAllAlbums(albumType?: string) {
 }
 
 export async function fetchAlbumsByArtistId(artistId: string) {
-  const { data, error } = await supabase
+  const { data: directAlbums, error: directError } = await supabase
     .from('albums')
     .select('*')
     .eq('artist_id', artistId)
     .order('year', { ascending: false });
   
-  if (error) {
-    console.error(`Error fetching albums for artist ${artistId}:`, error);
+  if (directError) {
+    console.error(`Error fetching albums for artist ${artistId}:`, directError);
     toast.error('Failed to load artist albums');
     return [];
   }
   
-  return data;
+  // For collaborative albums like "Love Cycle" and "Backstreets (Compilation)"
+  // In a real app, you would have a proper junction table for collaborations
+  // This is a simplified approach for demonstration
+  let collaborativeAlbums: any[] = [];
+  
+  if (directAlbums) {
+    // Check if this is Kennrank or Bill James for Love Cycle collaboration
+    if (directAlbums.some(album => album.title === 'Love Cycle')) {
+      const artistData = await fetchArtistBySlug(artistId === (await fetchArtistBySlug('kennrank'))?.id ? 'bill-james' : 'kennrank');
+      if (artistData) {
+        const { data: collabAlbums } = await supabase
+          .from('albums')
+          .select('*')
+          .eq('artist_id', artistData.id)
+          .eq('title', 'Love Cycle');
+          
+        if (collabAlbums && collabAlbums.length > 0) {
+          collaborativeAlbums = [...collaborativeAlbums, ...collabAlbums];
+        }
+      }
+    }
+    
+    // For Backstreets compilation, which is collaborative across all artists
+    if (!directAlbums.some(album => album.title.includes('Backstreets'))) {
+      const { data: backstreetsAlbum } = await supabase
+        .from('albums')
+        .select('*')
+        .ilike('title', '%Backstreets%');
+        
+      if (backstreetsAlbum && backstreetsAlbum.length > 0) {
+        collaborativeAlbums = [...collaborativeAlbums, ...backstreetsAlbum];
+      }
+    }
+  }
+  
+  return [...directAlbums, ...collaborativeAlbums];
 }
 
 // Songs
@@ -245,4 +280,208 @@ export async function updateBeat(id: string, updates: any) {
   
   toast.success('Beat updated successfully');
   return true;
+}
+
+// Auth methods
+export async function getCurrentUserProfile() {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) return null;
+  
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*, artists(*)')
+    .eq('id', user.id)
+    .single();
+  
+  if (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+  
+  return data;
+}
+
+export async function updateProfile(updates: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    toast.error('You must be logged in to update your profile');
+    return false;
+  }
+  
+  const { error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', user.id);
+  
+  if (error) {
+    console.error('Error updating profile:', error);
+    toast.error('Failed to update profile');
+    return false;
+  }
+  
+  toast.success('Profile updated successfully');
+  return true;
+}
+
+// Create methods for music and videos
+export async function createAlbum(albumData: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    toast.error('You must be logged in to create an album');
+    return null;
+  }
+  
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('artist_id')
+    .eq('id', user.id)
+    .single();
+  
+  if (!profile?.artist_id) {
+    toast.error('You must have an artist profile to create albums');
+    return null;
+  }
+  
+  const { data, error } = await supabase
+    .from('albums')
+    .insert({
+      ...albumData,
+      artist_id: profile.artist_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating album:', error);
+    toast.error('Failed to create album');
+    return null;
+  }
+  
+  toast.success('Album created successfully');
+  return data;
+}
+
+export async function createSong(songData: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    toast.error('You must be logged in to create a song');
+    return null;
+  }
+  
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('artist_id')
+    .eq('id', user.id)
+    .single();
+  
+  if (!profile?.artist_id) {
+    toast.error('You must have an artist profile to create songs');
+    return null;
+  }
+  
+  const { data, error } = await supabase
+    .from('songs')
+    .insert({
+      ...songData,
+      artist_id: profile.artist_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating song:', error);
+    toast.error('Failed to create song');
+    return null;
+  }
+  
+  toast.success('Song created successfully');
+  return data;
+}
+
+export async function createVideo(videoData: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    toast.error('You must be logged in to create a video');
+    return null;
+  }
+  
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('artist_id')
+    .eq('id', user.id)
+    .single();
+  
+  if (!profile?.artist_id) {
+    toast.error('You must have an artist profile to create videos');
+    return null;
+  }
+  
+  const { data, error } = await supabase
+    .from('videos')
+    .insert({
+      ...videoData,
+      artist_id: profile.artist_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating video:', error);
+    toast.error('Failed to create video');
+    return null;
+  }
+  
+  toast.success('Video created successfully');
+  return data;
+}
+
+export async function createBeat(beatData: any) {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    toast.error('You must be logged in to create a beat');
+    return null;
+  }
+  
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('artist_id')
+    .eq('id', user.id)
+    .single();
+  
+  if (!profile?.artist_id) {
+    toast.error('You must have a producer profile to create beats');
+    return null;
+  }
+  
+  const { data, error } = await supabase
+    .from('beats')
+    .insert({
+      ...beatData,
+      producer_id: profile.artist_id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating beat:', error);
+    toast.error('Failed to create beat');
+    return null;
+  }
+  
+  toast.success('Beat created successfully');
+  return data;
 }

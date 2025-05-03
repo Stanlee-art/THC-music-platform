@@ -9,19 +9,23 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogIn, LogOut, User } from "lucide-react";
 
 const Layout = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { isAuthenticated, signOut, user } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 flex">
         <AppSidebar />
         <main className="flex-1 overflow-y-auto pb-20">
-          <nav className="sticky top-0 z-10 bg-black/80 backdrop-blur-lg border-b border-white/5 p-4">
-            <NavigationMenu className="mx-auto">
+          <nav className="sticky top-0 z-10 bg-black/80 backdrop-blur-lg border-b border-white/5 p-4 flex justify-between items-center">
+            <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <Link to="/">
@@ -69,6 +73,26 @@ const Layout = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+            
+            <div>
+              {isAuthenticated ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-400 hidden sm:inline">
+                    <User className="inline h-4 w-4 mr-1" />
+                    {user?.user_metadata?.username || user?.email}
+                  </span>
+                  <Button variant="outline" size="sm" onClick={signOut} className="border-white/10">
+                    <LogOut className="h-4 w-4 mr-1" /> Logout
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="border-white/10">
+                    <LogIn className="h-4 w-4 mr-1" /> Login
+                  </Button>
+                </Link>
+              )}
+            </div>
           </nav>
           <Outlet />
         </main>

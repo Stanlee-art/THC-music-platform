@@ -32,7 +32,7 @@ const formatDate = (dateString: string) => {
 };
 
 const CatalogPage = () => {
-  const { type = "singles" } = useParams<{ type: 'singles' | 'albums' | 'mixtapes' | 'eps' }>();
+  const { type = "albums" } = useParams<{ type: 'singles' | 'albums' | 'mixtapes' | 'eps' }>();
   const [isLoaded, setIsLoaded] = useState(false);
   
   // Get the API type parameter based on URL type
@@ -45,7 +45,7 @@ const CatalogPage = () => {
   });
   
   // Format the type for display
-  const formattedType = typeLabels[type as keyof typeof typeLabels] || 'Singles';
+  const formattedType = typeLabels[type as keyof typeof typeLabels] || 'Albums';
 
   useEffect(() => {
     // Simulate loading for smooth transition
@@ -96,7 +96,7 @@ const CatalogPage = () => {
                   </div>
                 </div>
                 <h3 className="font-medium text-white text-lg">{item.title}</h3>
-                <p className="text-sm text-gray-400">{item.artists?.name || 'Unknown Artist'}</p>
+                <p className="text-sm text-gray-400">{item.artists?.name || 'Various Artists'}</p>
                 <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
                   <span>Released: {item.year}</span>
                   {item.tracks && <span>{item.tracks} tracks</span>}
