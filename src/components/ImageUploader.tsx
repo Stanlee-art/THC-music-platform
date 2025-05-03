@@ -1,96 +1,149 @@
 
-import { useState } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, ImagePlus } from "lucide-react";
-import { uploadImage } from "@/lib/database";
+import { Pencil, Upload, Loader2, AlertCircle, Image as ImageIcon } from "lucide-react";
+import { uploadImage, validateImageFile } from "@/lib/music-api";
 import { toast } from "sonner";
 
 interface ImageUploaderProps {
-  bucketName: string;
-  folderPath: string;
-  onImageUploaded: (url: string) => void;
-  existingImageUrl?: string;
+  type: 'artist' | 'album' | 'song';
+  id: string;
+  currentImage?: string | null;
+  onImageUploaded?: (url: string) => void;
   className?: string;
+  variant?: 'button' | 'overlay';
 }
 
-const ImageUploader = ({
-  bucketName,
-  folderPath,
+const ImageUploader = ({ 
+  type, 
+  id, 
+  currentImage, 
   onImageUploaded,
-  existingImageUrl,
   className = "",
+  variant = "button"
 }: ImageUploaderProps) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const fileSize = file.size / 1024 / 1024; // in MB
-    if (fileSize > 5) {
-      toast.error("File size should be less than 5MB");
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const imageUrl = await uploadImage(file, bucketName, folderPath);
-      if (imageUrl) {
-        onImageUploaded(imageUrl);
-        toast.success("Image uploaded successfully");
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const validation = validateImageFile(file);
+      
+      if (!validation.valid) {
+        setFileError(validation.message || "Invalid image file");
+        toast.error(validation.message || "Invalid image file");
+        return;
       }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
-    } finally {
-      setIsUploading(false);
+      
+      setFileError(null);
+      setIsUploading(true);
+      
+      try {
+        const url = await uploadImage(file, type, id);
+        
+        if (url && onImageUploaded) {
+          onImageUploaded(url);
+        }
+      } finally {
+        setIsUploading(false);
+        
+        // Reset file input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }
     }
   };
 
-  return (
-    <div className={`relative group ${className}`}>
-      {existingImageUrl ? (
-        <div className="relative">
-          <img
-            src={existingImageUrl}
-            alt="Uploaded"
-            className="w-full h-full object-cover rounded"
+  const triggerFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  if (variant === "overlay") {
+    return (
+      <div className={`relative group ${className}`}>
+        {currentImage ? (
+          <img 
+            src={currentImage} 
+            alt="Current image" 
+            className="w-full h-full object-cover" 
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-            <label className="cursor-pointer">
-              <div className="flex flex-col items-center justify-center text-white">
-                <Upload className="h-6 w-6 mb-2" />
-                <span className="text-sm font-medium">Change Image</span>
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-                disabled={isUploading}
-              />
-            </label>
+        ) : (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <ImageIcon className="w-1/3 h-1/3 text-gray-600" />
           </div>
-        </div>
-      ) : (
-        <label className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-thc-blue transition">
-          <div className="flex flex-col items-center justify-center text-gray-400">
-            <ImagePlus className="h-12 w-12 mb-3" />
-            <span className="text-sm font-medium mb-1">Upload Image</span>
-            <span className="text-xs">Click to browse</span>
-          </div>
+        )}
+        
+        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <input
             type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
             accept="image/*"
             className="hidden"
-            onChange={handleFileChange}
-            disabled={isUploading}
           />
-        </label>
-      )}
-      {isUploading && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded">
-          <div className="animate-pulse text-white">Uploading...</div>
+          
+          <Button 
+            variant="outline" 
+            size="sm"
+            disabled={isUploading}
+            onClick={triggerFileInput}
+            className="text-white border-white/50"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Pencil className="mr-2 h-4 w-4" />
+                Change Image
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+      
+      <Button 
+        variant="outline" 
+        size="sm"
+        disabled={isUploading}
+        onClick={triggerFileInput}
+      >
+        {isUploading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Uploading...
+          </>
+        ) : (
+          <>
+            <Upload className="mr-2 h-4 w-4" />
+            {currentImage ? 'Change Image' : 'Upload Image'}
+          </>
+        )}
+      </Button>
+      
+      {fileError && (
+        <div className="mt-2 text-red-500 text-sm flex items-center gap-1">
+          <AlertCircle className="h-4 w-4" />
+          <span>{fileError}</span>
         </div>
       )}
     </div>

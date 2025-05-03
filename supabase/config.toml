@@ -1,1 +1,28 @@
+
 project_id = "djadwbnfmhspczqwefzb"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+[inbucket]
+port = 54324
+
+[auth]
+enabled = true
+
+[storage]
+enabled = true
+
+[functions]
+[functions.music-upload]
+verify_jwt = true
+[functions.music-management]
+verify_jwt = true

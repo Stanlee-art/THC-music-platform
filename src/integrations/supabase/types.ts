@@ -14,8 +14,11 @@ export type Database = {
           album_type: string
           artist_id: string
           created_at: string | null
+          description: string | null
+          genres: string[] | null
           id: string
           image_url: string | null
+          release_date: string | null
           title: string
           tracks: number | null
           updated_at: string | null
@@ -25,8 +28,11 @@ export type Database = {
           album_type: string
           artist_id: string
           created_at?: string | null
+          description?: string | null
+          genres?: string[] | null
           id?: string
           image_url?: string | null
+          release_date?: string | null
           title: string
           tracks?: number | null
           updated_at?: string | null
@@ -36,8 +42,11 @@ export type Database = {
           album_type?: string
           artist_id?: string
           created_at?: string | null
+          description?: string | null
+          genres?: string[] | null
           id?: string
           image_url?: string | null
+          release_date?: string | null
           title?: string
           tracks?: number | null
           updated_at?: string | null
@@ -58,40 +67,58 @@ export type Database = {
           banner_url: string | null
           bio: string | null
           created_at: string | null
+          facebook_url: string | null
           followers: string | null
+          genres: string[] | null
           id: string
           image_url: string | null
+          instagram_url: string | null
           name: string
           slug: string
+          spotify_url: string | null
+          twitter_url: string | null
           type: string
           updated_at: string | null
           user_id: string | null
+          website_url: string | null
         }
         Insert: {
           banner_url?: string | null
           bio?: string | null
           created_at?: string | null
+          facebook_url?: string | null
           followers?: string | null
+          genres?: string[] | null
           id?: string
           image_url?: string | null
+          instagram_url?: string | null
           name: string
           slug: string
+          spotify_url?: string | null
+          twitter_url?: string | null
           type: string
           updated_at?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Update: {
           banner_url?: string | null
           bio?: string | null
           created_at?: string | null
+          facebook_url?: string | null
           followers?: string | null
+          genres?: string[] | null
           id?: string
           image_url?: string | null
+          instagram_url?: string | null
           name?: string
           slug?: string
+          spotify_url?: string | null
+          twitter_url?: string | null
           type?: string
           updated_at?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -186,10 +213,16 @@ export type Database = {
           artist_id: string
           audio_url: string | null
           created_at: string | null
+          duration: number | null
+          encoding_rate: string | null
+          file_format: string | null
+          file_size: number | null
           id: string
           image_url: string | null
           is_single: boolean | null
+          lyrics: string | null
           title: string
+          track_number: number | null
           updated_at: string | null
           year: string | null
         }
@@ -198,10 +231,16 @@ export type Database = {
           artist_id: string
           audio_url?: string | null
           created_at?: string | null
+          duration?: number | null
+          encoding_rate?: string | null
+          file_format?: string | null
+          file_size?: number | null
           id?: string
           image_url?: string | null
           is_single?: boolean | null
+          lyrics?: string | null
           title: string
+          track_number?: number | null
           updated_at?: string | null
           year?: string | null
         }
@@ -210,10 +249,16 @@ export type Database = {
           artist_id?: string
           audio_url?: string | null
           created_at?: string | null
+          duration?: number | null
+          encoding_rate?: string | null
+          file_format?: string | null
+          file_size?: number | null
           id?: string
           image_url?: string | null
           is_single?: boolean | null
+          lyrics?: string | null
           title?: string
+          track_number?: number | null
           updated_at?: string | null
           year?: string | null
         }
@@ -286,7 +331,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_artist_admin: {
+        Args: { artist_id_param: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
