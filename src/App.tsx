@@ -15,6 +15,8 @@ import CatalogPage from "./pages/CatalogPage";
 import AboutJoePage from "./pages/AboutJoePage";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
+import ArtistDashboardPage from "./pages/ArtistDashboardPage";
+import EditProfilePage from "./pages/EditProfilePage";
 import Layout from "./components/Layout";
 
 // Create a client
@@ -43,6 +45,8 @@ const App = () => (
                   <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
                   <Route path="/catalog/:type" element={<CatalogPage />} />
                   <Route path="/about-joe" element={<AboutJoePage />} />
+                  <Route path="/dashboard" element={<ArtistDashboardPage />} />
+                  <Route path="/edit-profile" element={<EditProfilePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/auth" element={<AuthPage />} />
