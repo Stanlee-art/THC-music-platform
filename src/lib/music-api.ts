@@ -55,7 +55,10 @@ export async function uploadAudio(file: File, albumId: string, title: string, tr
     formData.append('title', title);
     formData.append('trackNumber', String(trackNumber));
     
-    const response = await fetch(`${supabase.functions.url}/music-upload/upload-audio`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-upload/upload-audio";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -95,7 +98,10 @@ export async function uploadImage(file: File, type: 'artist' | 'album' | 'song',
     formData.append('type', type);
     formData.append('id', id);
     
-    const response = await fetch(`${supabase.functions.url}/music-upload/upload-image`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-upload/upload-image";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -129,7 +135,10 @@ export async function updateArtist(artistData: any) {
       return null;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/update-artist`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/update-artist";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -164,7 +173,10 @@ export async function createAlbum(albumData: any) {
       return null;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/create-album`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/create-album";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -199,7 +211,10 @@ export async function updateAlbum(albumData: any) {
       return null;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/update-album`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/update-album";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -234,7 +249,10 @@ export async function updateSong(songData: any) {
       return null;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/update-song`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/update-song";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -269,7 +287,10 @@ export async function reorderSongs(albumId: string, songOrders: { id: string, tr
       return null;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/reorder-songs`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = "https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/reorder-songs";
+    
+    const response = await fetch(functionEndpoint, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${session.access_token}`,
@@ -304,7 +325,10 @@ export async function getArtistContent(artistId: string) {
       headers.Authorization = `Bearer ${session.access_token}`;
     }
 
-    const response = await fetch(`${supabase.functions.url}/music-management/get-artist-content?artistId=${artistId}`, {
+    // Use the full URL for function endpoint
+    const functionEndpoint = `https://djadwbnfmhspczqwefzb.supabase.co/functions/v1/music-management/get-artist-content?artistId=${artistId}`;
+    
+    const response = await fetch(functionEndpoint, {
       headers
     });
 

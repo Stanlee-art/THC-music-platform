@@ -12,6 +12,10 @@ interface ImageUploaderProps {
   onImageUploaded?: (url: string) => void;
   className?: string;
   variant?: 'button' | 'overlay';
+  // Add these props to handle backward compatibility with existing code
+  bucketName?: string;
+  folderPath?: string;
+  existingImageUrl?: string;
 }
 
 const ImageUploader = ({ 
@@ -20,8 +24,14 @@ const ImageUploader = ({
   currentImage, 
   onImageUploaded,
   className = "",
-  variant = "button"
+  variant = "button",
+  // Map legacy props to the current ones
+  existingImageUrl,
+  bucketName,
+  folderPath
 }: ImageUploaderProps) => {
+  // Use existingImageUrl as a fallback for currentImage
+  const imageUrl = currentImage || existingImageUrl;
   const [isUploading, setIsUploading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,9 +76,9 @@ const ImageUploader = ({
   if (variant === "overlay") {
     return (
       <div className={`relative group ${className}`}>
-        {currentImage ? (
+        {imageUrl ? (
           <img 
-            src={currentImage} 
+            src={imageUrl} 
             alt="Current image" 
             className="w-full h-full object-cover" 
           />
@@ -135,7 +145,7 @@ const ImageUploader = ({
         ) : (
           <>
             <Upload className="mr-2 h-4 w-4" />
-            {currentImage ? 'Change Image' : 'Upload Image'}
+            {imageUrl ? 'Change Image' : 'Upload Image'}
           </>
         )}
       </Button>
