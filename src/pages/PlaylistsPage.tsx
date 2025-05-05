@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { createPlaylist, useUserPlaylists } from "@/lib/roles-api";
+import { createPlaylist, useUserPlaylists } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Play, PlusCircle, Music, List } from "lucide-react";
 import { formatDate } from "@/lib/utils";

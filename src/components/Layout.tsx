@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/lib/roles-api";
+import { useUserProfile } from "@/lib/api";
 import { LogIn, LogOut, User, Music, Settings } from "lucide-react";
 
 const Layout = () => {

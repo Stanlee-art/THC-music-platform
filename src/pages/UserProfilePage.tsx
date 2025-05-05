@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, User } from "lucide-react";
 import { toast } from "sonner";
-import { updateUserProfile, useUserProfile, UserProfile } from "@/lib/roles-api";
+import { updateUserProfile, useUserProfile, UserProfile } from "@/lib/api";
 
 const UserProfilePage = () => {
   const { user } = useAuth();
