@@ -18,6 +18,8 @@ import AuthPage from "./pages/AuthPage";
 import ArtistDashboardPage from "./pages/ArtistDashboardPage";
 import EditProfilePage from "./pages/EditProfilePage";
 import Layout from "./components/Layout";
+import UserProfilePage from "./pages/UserProfilePage";
+import PlaylistsPage from "./pages/PlaylistsPage";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -47,6 +49,8 @@ const App = () => (
                   <Route path="/about-joe" element={<AboutJoePage />} />
                   <Route path="/dashboard" element={<ArtistDashboardPage />} />
                   <Route path="/edit-profile" element={<EditProfilePage />} />
+                  <Route path="/user-profile" element={<UserProfilePage />} />
+                  <Route path="/playlists" element={<PlaylistsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
                 <Route path="/auth" element={<AuthPage />} />

@@ -19,3 +19,24 @@ export function formatDuration(seconds: number): string {
   
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
+
+/**
+ * Check if a value is truthy with strict type checking
+ */
+export function isPresent<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+}
+
+/**
+ * Format a date string to a more readable format
+ */
+export function formatDate(dateString: string | undefined): string {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric' 
+  });
+}

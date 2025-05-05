@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -143,10 +142,10 @@ const ArtistDetailPage = () => {
             {isEditMode && (
               <div className="self-end">
                 <ImageUploader 
-                  bucketName="artist_images"
-                  folderPath="banners"
+                  type="artist"
+                  id={artist.id}
+                  currentImage={artist.banner_url}
                   onImageUploaded={handleBannerImageUpload}
-                  existingImageUrl={artist.banner_url}
                   className="w-32 h-20"
                 />
               </div>
@@ -161,10 +160,10 @@ const ArtistDetailPage = () => {
                 {isEditMode && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <ImageUploader 
-                      bucketName="artist_images"
-                      folderPath="profiles"
+                      type="artist"
+                      id={artist.id}
+                      currentImage={artist.image_url}
                       onImageUploaded={handleProfileImageUpload}
-                      existingImageUrl={artist.image_url}
                       className="w-full h-full"
                     />
                   </div>

@@ -1,5 +1,5 @@
 
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AppSidebar } from "./AppSidebar";
 import { MusicPlayer } from "./MusicPlayer";
 import {
@@ -10,14 +10,25 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogIn, LogOut, User } from "lucide-react";
+import { useUserProfile } from "@/lib/roles-api";
+import { LogIn, LogOut, User, Music, Settings } from "lucide-react";
 
 const Layout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const { isAuthenticated, signOut, user } = useAuth();
+  const { data: profile } = useUserProfile();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -71,24 +82,64 @@ const Layout = () => {
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
+                {isAuthenticated && (
+                  <NavigationMenuItem>
+                    <Link to="/playlists">
+                      <NavigationMenuLink className={cn(
+                        navigationMenuTriggerStyle(),
+                        "bg-transparent hover:bg-white/5",
+                        currentPath.includes("/playlists") && "text-thc-blue"
+                      )}>
+                        <Music className="h-4 w-4 mr-1" />
+                        Playlists
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                )}
               </NavigationMenuList>
             </NavigationMenu>
             
             <div>
               {isAuthenticated ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400 hidden sm:inline">
-                    <User className="inline h-4 w-4 mr-1" />
-                    {user?.user_metadata?.username || user?.email}
-                  </span>
-                  <Button variant="outline" size="sm" onClick={signOut} className="border-white/10">
-                    <LogOut className="h-4 w-4 mr-1" /> Logout
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="border-white/10">
+                        <User className="h-4 w-4 mr-1" />
+                        <span className="hidden sm:inline">
+                          {profile?.display_name || profile?.username || user?.email?.split('@')[0]}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      
+                      <DropdownMenuItem onClick={() => navigate("/user-profile")}>
+                        <User className="h-4 w-4 mr-2" /> Profile Settings
+                      </DropdownMenuItem>
+                      
+                      {profile?.role === 'artist' && (
+                        <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                          <Music className="h-4 w-4 mr-2" /> Artist Dashboard
+                        </DropdownMenuItem>
+                      )}
+                      
+                      <DropdownMenuItem onClick={() => navigate("/playlists")}>
+                        <Music className="h-4 w-4 mr-2" /> My Playlists
+                      </DropdownMenuItem>
+                      
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut}>
+                        <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               ) : (
                 <Link to="/auth">
                   <Button variant="outline" size="sm" className="border-white/10">
-                    <LogIn className="h-4 w-4 mr-1" /> Login
+                    <LogIn className="h-4 w-4 mr-1" /> Sign In
                   </Button>
                 </Link>
               )}
