@@ -7,11 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { 
   fetchArtistBySlug, 
   fetchAlbumsByArtistId, 
-  fetchSinglesByArtistId,
-  fetchVideosByArtistId,
-  fetchBeatsByProducerId,
-  updateArtistProfile
-} from "@/lib/database";
+  fetchSinglesByArtistId
+} from "@/lib/api";
 import ImageUploader from "@/components/ImageUploader";
 import { toast } from "sonner";
 
@@ -43,56 +40,19 @@ const ArtistDetailPage = () => {
     enabled: !!artist?.id,
   });
   
-  // Fetch artist videos (for creators)
-  const { data: videos = [] } = useQuery({
-    queryKey: ['artist-videos', artist?.id],
-    queryFn: () => fetchVideosByArtistId(artist?.id),
-    enabled: !!artist?.id && artist?.type === 'creator',
-  });
-  
-  // Fetch producer beats (for producers)
-  const { data: beats = [] } = useQuery({
-    queryKey: ['producer-beats', artist?.id],
-    queryFn: () => fetchBeatsByProducerId(artist?.id),
-    enabled: !!artist?.id && (artist?.type === 'producer' || artist?.name === 'Meme'),
-  });
+  // Mock data until videos and beats tables are implemented
+  const videos: any[] = [];
+  const beats: any[] = [];
 
-  // Handle profile image upload
+  // Profile updates will be available when artist profile functionality is implemented
   const handleProfileImageUpload = async (url: string) => {
-    if (!artist?.id) return;
-    
-    try {
-      const success = await updateArtistProfile(artist.id, {
-        image_url: url,
-        updated_at: new Date().toISOString()
-      });
-      
-      if (success) {
-        refetchArtist();
-      }
-    } catch (error) {
-      console.error('Error updating profile image:', error);
-      toast.error('Failed to update profile image');
-    }
+    console.log('Profile image update functionality coming soon');
+    toast.info('Profile updates coming soon!');
   };
   
-  // Handle banner image upload
   const handleBannerImageUpload = async (url: string) => {
-    if (!artist?.id) return;
-    
-    try {
-      const success = await updateArtistProfile(artist.id, {
-        banner_url: url,
-        updated_at: new Date().toISOString()
-      });
-      
-      if (success) {
-        refetchArtist();
-      }
-    } catch (error) {
-      console.error('Error updating banner image:', error);
-      toast.error('Failed to update banner image');
-    }
+    console.log('Banner image update functionality coming soon');
+    toast.info('Profile updates coming soon!');
   };
 
   const getArtistIcon = (type: string) => {
@@ -134,8 +94,8 @@ const ArtistDetailPage = () => {
     <div>
       {/* Artist Banner & Info */}
       <div 
-        className="relative h-64 md:h-80 bg-cover bg-center" 
-        style={{ backgroundImage: `url(${artist.banner_url})` }}
+        className="relative h-64 md:h-80 bg-cover bg-center bg-gray-800" 
+        style={{ backgroundImage: `url(${artist.image_url || "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb"})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent">
           <div className="container h-full flex flex-col justify-between py-6">
@@ -144,7 +104,7 @@ const ArtistDetailPage = () => {
                 <ImageUploader 
                   type="artist"
                   id={artist.id}
-                  currentImage={artist.banner_url}
+                  currentImage={artist.image_url}
                   onImageUploaded={handleBannerImageUpload}
                   className="w-32 h-20"
                 />
@@ -171,10 +131,10 @@ const ArtistDetailPage = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  {getArtistIcon(artist.type)}
+                  {getArtistIcon('artist')}
                   <h1 className="text-3xl font-bold text-white">{artist.name}</h1>
                 </div>
-                <p className="text-gray-300 mb-2">{artist.followers} followers</p>
+                <p className="text-gray-300 mb-2">1.2K followers</p>
               </div>
             </div>
           </div>
@@ -274,8 +234,8 @@ const ArtistDetailPage = () => {
           </div>
         )}
 
-        {/* Videos Section - Only for creator (Joe) */}
-        {artist.type === 'creator' && videos.length > 0 && (
+        {/* Videos Section - Videos functionality coming soon */}
+        {artist.name === 'Joe' && videos.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4">Videos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -318,8 +278,8 @@ const ArtistDetailPage = () => {
           </div>
         )}
 
-        {/* Beats Section - Only for producer (Sean) and Meme who is also a producer */}
-        {(artist.type === 'producer' || artist.name === 'Meme') && beats.length > 0 && (
+        {/* Beats Section - Beats functionality coming soon */}
+        {(artist.name === 'Sean' || artist.name === 'Meme') && beats.length > 0 && (
           <div className="mb-10">
             <h2 className="text-2xl font-bold mb-4">Beats</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

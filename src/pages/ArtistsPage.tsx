@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search, Music, Film, Disc } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllArtists } from "@/lib/database";
+import { fetchAllArtists } from "@/lib/api";
 
 const ArtistsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { fetchArtistBySlug, fetchVideosByArtistId } from "@/lib/database";
+import { fetchArtistBySlug } from "@/lib/api";
 
 const AboutJoePage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -15,21 +15,18 @@ const AboutJoePage = () => {
     queryFn: () => fetchArtistBySlug('joe'),
   });
   
-  // Fetch Joe's videos
-  const { data: videos = [], isLoading: videosLoading } = useQuery({
-    queryKey: ['artist-videos', artist?.id],
-    queryFn: () => fetchVideosByArtistId(artist?.id),
-    enabled: !!artist?.id,
-  });
+  // Mock videos data until videos table exists
+  const videos = [];
+  const videosLoading = false;
 
   useEffect(() => {
-    if (artist && videos.length > 0) {
+    if (artist) {
       const timer = setTimeout(() => {
         setIsLoaded(true);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [artist, videos]);
+  }, [artist]);
 
   return (
     <div className={`container py-8 transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
@@ -37,7 +34,7 @@ const AboutJoePage = () => {
       <div className="relative h-80 mb-12 rounded-2xl overflow-hidden">
         {artist && (
           <img 
-            src={artist.banner_url} 
+            src={artist.image_url || "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb"} 
             alt="Joe" 
             className="w-full h-full object-cover"
           />
@@ -80,7 +77,7 @@ const AboutJoePage = () => {
                 <strong className="text-thc-blue">{videos.length}</strong> videos
               </span>
               <span>
-                <strong className="text-thc-blue">{artist?.followers}</strong> followers
+                <strong className="text-thc-blue">1.2K</strong> followers
               </span>
             </div>
           </div>

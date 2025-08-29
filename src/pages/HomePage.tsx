@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllArtists, fetchAllAlbums } from "@/lib/database";
+import { fetchAllArtists, fetchAllAlbums } from "@/lib/api";
 
 const HomePage = () => {
   const [isLoaded, setIsLoaded] = useState(false);

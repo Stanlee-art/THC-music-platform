@@ -34,14 +34,9 @@ export async function getCurrentUserProfile(): Promise<UserProfile | null> {
 // Function to get the current user's role
 export async function getUserRole(): Promise<UserRole | null> {
   try {
-    const { data, error } = await supabase.rpc('get_user_role');
-    
-    if (error) {
-      console.error('Error fetching user role:', error);
-      return null;
-    }
-    
-    return data as UserRole;
+    // For now, return null until the get_user_role function is created
+    console.log('User role functionality not fully available yet');
+    return null;
   } catch (error) {
     console.error('Error in getUserRole:', error);
     return null;
@@ -51,14 +46,9 @@ export async function getUserRole(): Promise<UserRole | null> {
 // Function to check if the current user is an artist
 export async function isUserArtist(): Promise<boolean> {
   try {
-    const { data, error } = await supabase.rpc('is_artist');
-    
-    if (error) {
-      console.error('Error checking artist status:', error);
-      return false;
-    }
-    
-    return data as boolean;
+    // For now, return false until the is_artist function is created
+    console.log('Artist check functionality not fully available yet');
+    return false;
   } catch (error) {
     console.error('Error in isUserArtist:', error);
     return false;
